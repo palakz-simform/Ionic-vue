@@ -25,6 +25,8 @@ import './theme/variables.css';
 import './theme/core.css'
 import BaseLayout from './components/base/BaseLayout.vue'
 import { createPinia } from 'pinia'
+import { defineCustomElements } from '@ionic/pwa-elements/loader';
+defineCustomElements(window);
 const pinia = createPinia()
 const app = createApp(App)
   .use(IonicVue)
