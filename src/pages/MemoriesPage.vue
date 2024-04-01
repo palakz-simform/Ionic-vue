@@ -18,4 +18,5 @@ import { useMemoryStore } from '../stores/memory'
 const {memories} = useMemoryStore()
 console.log(memories);
 const addd = ref(add)
+
 </script>
