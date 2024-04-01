@@ -85,7 +85,7 @@ const getCurrentPosition = async () => {
   fetchData(coordinates.coords.latitude,coordinates.coords.longitude)
 };
 async function fetchData(latitude,longitude) {
-  const url = `https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=76795dbae9ef2f0dc863fa136fa8762a`;
+  const url = `https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${import.meta.env.VITE_OPENWEATHER_API_KEY}`;
   try {
     const response = await fetch(url);
     if (!response.ok) {
