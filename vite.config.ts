@@ -5,10 +5,19 @@ import { defineConfig } from 'vite'
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [
-    vue(),
+    plugins: [
+    vue({
+      template:{
+        compilerOptions:{
+          isCustomElement:(tag)=>tag==="capacitor-google-map"
+        }
+      }
+    }),
     legacy()
   ],
+  optimizeDeps: {
+    include: ['vue', 'capacitor-google-map']
+  },
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),

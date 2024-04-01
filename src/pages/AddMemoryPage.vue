@@ -3,18 +3,13 @@
     <form class="ion-padding" @submit.prevent="addMemory">
       <ion-list>
         <ion-input v-model="memoryData.title" label="Title" label-placement="floating" type="text" />
-        <!-- <ion-input
-        v-model="memoryData.imageUrl"
-        label="Image URL"
-        label-placement="floating"
-        type="url"/> -->
         <ion-textarea v-model="memoryData.description" label="Description" label-placement="floating" />
          <ion-row>
         <ion-col size="10.5">
     <ion-input v-model="memoryData.loaction" label="Location" label-placement="floating" type="text" />
   </ion-col>
   <ion-col size="1.5" class="locationIcon">
-    <ion-icon :icon="locationIcon" style="color: blueviolet;" size="large"  @click="clickImage"></ion-icon>
+    <ion-icon :icon="locationIcon" style="color: blueviolet;" size="large"  @click="createMap" ></ion-icon>
   </ion-col>
         </ion-row>
         <ion-grid>
@@ -32,7 +27,7 @@
             </ion-col>
           </ion-row>
         </ion-grid>
-       
+
         <ion-button expand="block" class="ion-margin-top " @click="addMemory">
           Submit
         </ion-button>
@@ -49,7 +44,7 @@ import { useRouter } from 'vue-router'
 import { camera,location } from 'ionicons/icons'
 import { Camera, CameraResultType } from '@capacitor/camera';
 import { Geolocation } from '@capacitor/geolocation';
-
+import { GoogleMap } from '@capacitor/google-maps';
 
 const cameraIcon = ref(camera)
 const locationIcon = ref(location)
@@ -102,8 +97,13 @@ async function fetchData(latitude,longitude) {
     console.error('There was a problem with the fetch operation:', error);
   }
 }
-
 getCurrentPosition()
+
+const mapOpen = ref(false)
+const myDiv = ref(null)
+const createMap = async () => {
+ router.push('/memories/map');
+};
 </script>
 <style scoped>
 .camera-content{
@@ -120,5 +120,9 @@ ion-img{
 }
 .locationIcon{
   margin-top: 10px;
+}
+.map-container {
+  width: 100%;
+  height: 100vh; /* 100% viewport height */
 }
 </style>
