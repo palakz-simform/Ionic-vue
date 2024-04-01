@@ -1,7 +1,7 @@
 <template>
     <base-layout :page-title="loadedMemory?loadedMemory.title : 'Loading...'" page-default-back-link="/memories">
     <h2 v-if="!loadedMemory">Could not find a memory</h2>
-    <MemoryOverview v-else :title="loadedMemory.title" :description="loadedMemory.description" :image="loadedMemory.image"/>
+    <MemoryOverview v-else :title="loadedMemory.title" :description="loadedMemory.description" :location="loadedMemory.location" :image="loadedMemory.image"/>
 
 
 </base-layout>

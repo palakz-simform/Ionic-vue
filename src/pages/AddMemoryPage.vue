@@ -9,22 +9,30 @@
         label-placement="floating"
         type="url"/> -->
         <ion-textarea v-model="memoryData.description" label="Description" label-placement="floating" />
+         <ion-row>
+        <ion-col size="10.5">
+    <ion-input v-model="memoryData.loaction" label="Location" label-placement="floating" type="text" />
+  </ion-col>
+  <ion-col size="1.5" class="locationIcon">
+    <ion-icon :icon="locationIcon" style="color: blueviolet;" size="large"  @click="clickImage"></ion-icon>
+  </ion-col>
+        </ion-row>
         <ion-grid>
           <ion-row>
             <ion-col class="image-content">
               Image
             </ion-col>
             <ion-col  class="camera-content">
-                <ion-icon :icon="addd" style="color: blueviolet;" size="large"  @click="clickImage"></ion-icon>
+                <ion-icon :icon="cameraIcon" style="color: blueviolet;" size="large"  @click="clickImage"></ion-icon>
             </ion-col>
           </ion-row>
           <ion-row>
             <ion-col v-if="imageUrl">
                 <ion-img :src="imageUrl" class="ion-float-center"></ion-img>
-              
             </ion-col>
           </ion-row>
         </ion-grid>
+       
         <ion-button expand="block" class="ion-margin-top " @click="addMemory">
           Submit
         </ion-button>
@@ -38,23 +46,28 @@ import { useMemoryStore } from "../stores/memory";
 import { storeToRefs } from "pinia";
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { camera } from 'ionicons/icons'
+import { camera,location } from 'ionicons/icons'
 import { Camera, CameraResultType } from '@capacitor/camera';
-import { Filesystem, Directory, Encoding } from '@capacitor/filesystem';
+import { Geolocation } from '@capacitor/geolocation';
 
-const addd = ref(camera)
+
+const cameraIcon = ref(camera)
+const locationIcon = ref(location)
 const router = useRouter()
 const memoryData = ref({})
 const memoryStore = useMemoryStore();
 const { memoryList } = storeToRefs(memoryStore);
 const addMemory = () => {
+  console.log(memoryData.value.loaction);
   const newMemory = {
     id: new Date().toISOString(),
     title: memoryData.value.title,
     image: imageUrl.value,
+    location: memoryData.value.loaction,
     description: memoryData.value.description
   }
   memoryList.value.unshift(newMemory)
+  console.log(memoryList.value);
   router.replace('/memories')
 }
 const render = ref(false)
@@ -70,7 +83,27 @@ const clickImage = async () => {
     imageUrl.value = String(image.webPath);
   });
 };
+const getCurrentPosition = async () => {
+  const coordinates = await Geolocation.getCurrentPosition();
 
+  console.log('Current position:', coordinates.coords);
+  fetchData(coordinates.coords.latitude,coordinates.coords.longitude)
+};
+async function fetchData(latitude,longitude) {
+  const url = `https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=76795dbae9ef2f0dc863fa136fa8762a`;
+  try {
+    const response = await fetch(url);
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+    const data = await response.json();
+    memoryData.value.loaction = data.name
+  } catch (error) {
+    console.error('There was a problem with the fetch operation:', error);
+  }
+}
+
+getCurrentPosition()
 </script>
 <style scoped>
 .camera-content{
@@ -84,5 +117,8 @@ const clickImage = async () => {
 }
 ion-img{
   height: 250px !important;
+}
+.locationIcon{
+  margin-top: 10px;
 }
 </style>
